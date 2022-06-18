@@ -126,19 +126,15 @@ namespace Usuarios
             try
             {
                 SqlDataReader leitor = command.ExecuteReader();
-                //listView_Usuarios.Items.Clear();
                
-
-                int i = 0;
                 while (leitor.Read())
                 {
                     listaUsuarios.Add(new Usuario(leitor["nomeCompleto"].ToString(), leitor["email"].ToString(), int.Parse(leitor["idUsuario"].ToString())));
-                    i++;
                 }
             }
             catch (Exception erro)
             {
-                //não sei
+                //não sei o que fazer????
                 //throw;
             }
 
