@@ -10,11 +10,13 @@ namespace Usuarios
 {
     internal class Usuario
     {
+        int idUsuario;
         string nome;
         string email;
 
         public string Nome { get => nome; set => nome = value; }
         public string Email { get => email; set => email = value; }
+        public int IdUsuario { get => idUsuario; set => idUsuario = value; }
 
         public Usuario(string nome)
         {     
@@ -23,6 +25,12 @@ namespace Usuarios
             
         }
 
+        public Usuario(string nome, string email, int id)
+        {
+            this.idUsuario = id;
+            this.nome = nome;
+            this.email = email;
+        }
         private void gerarEmail()
         {
             string[] vetorNome;
@@ -66,5 +74,79 @@ namespace Usuarios
             }
         }
 
+        public static bool removerUsuario(int idUsuario)
+        {
+
+            Banco banco = new Banco();
+            SqlConnection cn = banco.abrirConexao(); //open
+
+            SqlTransaction tran = cn.BeginTransaction();
+            SqlCommand command = new SqlCommand();
+
+            command.Connection = cn;
+            command.Transaction = tran;
+            command.CommandType = CommandType.Text;
+
+            command.CommandText = "Delete from usuario where idUsuario=@idUsuario;";
+            command.Parameters.AddWithValue("@idUsuario", idUsuario);
+
+            try
+            {
+                command.ExecuteNonQuery();
+                tran.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                tran.Rollback();
+                return false;
+            }
+            finally
+            {
+                banco.fecharConexao();
+            }
+        }
+        public static List<Usuario> gerarListaUsuarios()
+        {
+
+            List<Usuario> listaUsuarios = new List<Usuario>();
+
+            Banco banco = new Banco();
+            SqlConnection cn = banco.abrirConexao();
+
+            SqlTransaction tran = cn.BeginTransaction();
+            SqlCommand command = new SqlCommand();
+
+            command.Connection = cn;
+            command.Transaction = tran;
+            command.CommandType = CommandType.Text;
+
+            command.CommandText = "select * from usuario;";
+
+            try
+            {
+                SqlDataReader leitor = command.ExecuteReader();
+                //listView_Usuarios.Items.Clear();
+               
+
+                int i = 0;
+                while (leitor.Read())
+                {
+                    listaUsuarios.Add(new Usuario(leitor["nomeCompleto"].ToString(), leitor["email"].ToString(), int.Parse(leitor["idUsuario"].ToString())));
+                    i++;
+                }
+            }
+            catch (Exception erro)
+            {
+                //não sei
+                //throw;
+            }
+
+            finally
+            {
+                banco.fecharConexao();
+            }
+            return listaUsuarios;
+        }
     }
 }

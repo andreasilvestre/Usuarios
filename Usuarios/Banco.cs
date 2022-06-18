@@ -100,6 +100,7 @@ namespace Usuarios
         //string stringConexao = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=ATOSUFN;TrustServerCertificate=True;Integrated Security=True";
         string stringConexao = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=usuarios_db;TrustServerCertificate=True;Integrated Security=True";
 
+
         private SqlConnection cn;
 
         private void conexao()//vincular a string com o cn, bm inicia o CN
